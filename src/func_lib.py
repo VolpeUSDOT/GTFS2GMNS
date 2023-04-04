@@ -115,7 +115,7 @@ def convert_route_type_to_node_type_p(route_type: str) -> str:
 
 def convert_route_type_to_node_type_s(route_type: str) -> str:
     #  convert route type to node type on service network: 0:tram, 1:metro, 2:rail, 3:bus
-    node_type_dict = {0: "tram_service_nide", 1: "metro_service_node", 2: "rail_service_node", 3: "bus_service_node"}
+    node_type_dict = {0: "tram_service_node", 1: "metro_service_node", 2: "rail_service_node", 3: "bus_service_node"}
     return node_type_dict.get(int(route_type), "")
 
 

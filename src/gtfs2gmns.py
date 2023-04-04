@@ -3,6 +3,7 @@
 # Created Date: Wednesday, November 16th 2022
 # Contact Info: luoxiangyong01@gmail.com
 # Author/Copyright: Mr. Xiangyong Luo
+# Modified: Monday, April 3rd 2023 by Volpe
 ##############################################################
 
 import os
@@ -12,6 +13,7 @@ import datetime
 import numpy as np
 import pandas as pd
 import time
+import argparse
 from pathlib import Path
 
 base_dir = Path(__file__).parent
@@ -582,9 +584,29 @@ class GTFS2GMNS:
 
 if __name__ == '__main__':
 
-    gtfs_dir = r'C:\Users\roche\Anaconda_workspace\001_Github.com\GTFS2GMNS\test\GTFS'
-    # gtfs_dir = r'C:\Users\roche\Anaconda_workspace\001_Github.com\GTFS2GMNS\test\GTFS\Phoenix'
-    output_gmns_path = '.'
+    # PARSE ARGS
+    # ----------------------------------------------------------------------------------------------
+
+    program_description = 'GTFS2GMNS Helper Tool'
+
+    help_text = """
+    The command-line input expected for this script is as follows:
+
+    TheFilePathOfThisScript GTFSFilePath
+    """
+
+    parser = argparse.ArgumentParser(description=program_description, usage=help_text)
+
+    parser.add_argument("gtfs_folder", help="The full path to the GTFS input folder", type=str)
+
+    if len(sys.argv) == 2:
+        args = parser.parse_args()
+    else:
+        parser.print_help()
+        sys.exit()
+
+    gtfs_dir = args.gtfs_folder
+    output_gmns_path = args.gtfs_folder
     time_period = '0700_0800'
 
     node_df, link_df = GTFS2GMNS(gtfs_dir, output_gmns_path, time_period).main()

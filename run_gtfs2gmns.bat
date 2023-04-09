@@ -13,7 +13,7 @@ REM ==============================================
 set PYTHON="C:\Users\%USERNAME%\Anaconda3\envs\RDRenv\python.exe"
 set GMNS_CONVERTER="C:\GitHub\GTFS2GMNS\src\gtfs2gmns.py"
 
-set GTFS_DIR="C:\GitHub\RDR\Data\format_network_QS4\GTFS_QS4"
+set GTFS_DIR="C:\GitHub\RDR\Data\qs4_create_network\GTFS_QS4"
 
 REM ==============================================
 REM ========== RUN THE GTFS2GMNS TOOL ============

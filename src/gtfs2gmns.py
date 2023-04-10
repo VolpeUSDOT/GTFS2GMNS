@@ -3,7 +3,7 @@
 # Created Date: Wednesday, November 16th 2022
 # Contact Info: luoxiangyong01@gmail.com
 # Author/Copyright: Mr. Xiangyong Luo
-# Modified: Monday, April 3rd 2023 by Volpe
+# Modified: Monday, April 10th 2023 by Volpe
 ##############################################################
 
 import os
@@ -318,13 +318,15 @@ class GTFS2GMNS:
                     from_node_lat = float(one_line_df.iloc[k].stop_lat)
                     to_node_lon = float(one_line_df.iloc[k + 1].stop_lon)
                     to_node_lat = float(one_line_df.iloc[k + 1].stop_lat)
-                    length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat)
+                    length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat, 'mile')
                     lanes = number_of_trips
                     capacity = 999999
                     VDF_fftt1 = one_line_df.iloc[k + 1].arrival_time - one_line_df.iloc[k].arrival_time
                     # minutes
                     VDF_cap1 = lanes * capacity
-                    free_speed = ((length / 1000) / (VDF_fftt1 + 0.001)) * 60
+                    free_speed = (length / (VDF_fftt1 + 0.001)) * 60
+                    # (miles/minutes)*60 = miles/hour
+                    # free_speed = ((length / 1000) / (VDF_fftt1 + 0.001)) * 60
                     # (kilometers/minutes)*60 = kilometer/hour
                     VDF_alpha1 = 0.15
                     VDF_beta1 = 4
@@ -367,7 +369,7 @@ class GTFS2GMNS:
             to_node_lat = row.y_coord
             from_node_lon = node_lon_dict[row.physical_node_id]
             from_node_lat = node_lat_dict[row.physical_node_id]
-            length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat)
+            length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat, 'mile')
             free_speed = 2
             lanes = 1
             capacity = 999999
@@ -455,7 +457,8 @@ class GTFS2GMNS:
                 from_node_lat = float(physical_node_df.iloc[i].y_coord)
                 to_node_lon = float(neighboring_node_df.iloc[j].x_coord)
                 to_node_lat = float(neighboring_node_df.iloc[j].y_coord)
-                length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat)
+                # calculate length in meters for threshold
+                length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat, 'meter')
                 if (length > 321.869) | (length < 1):
                     continue
                 if (neighboring_node_df.iloc[j].route_id, neighboring_node_df.iloc[j].agency_name) in labeled_list:
@@ -464,6 +467,8 @@ class GTFS2GMNS:
                 labeled_list.append((neighboring_node_df.iloc[j].route_id, neighboring_node_df.iloc[j].agency_name))
                 # consider only one stops of another route
                 # transferring 1
+                # calculate length in miles for output
+                length = calculate_distance_from_geometry(from_node_lon, from_node_lat, to_node_lon, to_node_lat, 'mile')
                 #  print('transferring link length =', length)
                 link_id = number_of_transferring_links + 1
                 from_node_id = physical_node_df.iloc[i].node_id
@@ -477,7 +482,7 @@ class GTFS2GMNS:
                 capacity = 999999
                 VDF_fftt1 = (length / 1000) / 1
                 VDF_cap1 = lanes * capacity
-                free_speed = 1
+                free_speed = 2  # Volpe edited from 1 to 2
                 # 1 kilo/hour
                 VDF_alpha1 = 0.15
                 VDF_beta1 = 4

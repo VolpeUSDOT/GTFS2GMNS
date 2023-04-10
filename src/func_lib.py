@@ -3,6 +3,7 @@
 # Created Date: Wednesday, November 16th 2022
 # Contact Info: luoxiangyong01@gmail.com
 # Author/Copyright: Mr. Xiangyong Luo
+# Modified: Monday, April 10th 2023 by Volpe
 ##############################################################
 
 import math
@@ -126,7 +127,7 @@ def convert_route_type_to_link_type(route_type: str) -> str:
 
 
 # WGS84 transfer coordinate system to distance(mile) #xy
-def calculate_distance_from_geometry(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
+def calculate_distance_from_geometry(lon1: float, lat1: float, lon2: float, lat2: float, unit: str) -> float:
     radius = 6371
     d_latitude = (lat2 - lat1) * math.pi / 180.0
     d_longitude = (lon2 - lon1) * math.pi / 180.0
@@ -135,8 +136,11 @@ def calculate_distance_from_geometry(lon1: float, lat1: float, lon2: float, lat2
         lat2 * math.pi / 180.0) * math.sin(d_longitude / 2) * math.sin(d_longitude / 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    # distance = radius * c * 1000 / 1609.34  # mile
-    distance = radius * c * 1000  # meter
+    if unit == 'mile':
+        distance = radius * c * 1000 / 1609.34  # mile
+    elif unit == 'meter':
+        distance = radius * c * 1000  # meter
+
     return distance
 
 

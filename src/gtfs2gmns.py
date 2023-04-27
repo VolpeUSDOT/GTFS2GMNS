@@ -92,12 +92,12 @@ class GTFS2GMNS:
         print(f"Info: number of stops = {len(stop_df)} \n")
 
         print('Info: start reading GTFS: routes file...')
-        route_df = pd.read_csv(required_files_dict.get("routes.txt"), encoding='utf-8-sig',dtype=str)
+        route_df = pd.read_csv(required_files_dict.get("routes.txt"), encoding='utf-8-sig', dtype=str)
         route_df = route_df[['route_id', 'route_short_name', 'route_long_name', 'route_type']]
         print(f"Info: number of routes = {len(route_df)} \n")
 
         print('Info: start reading GTFS: trips file...')
-        trip_df = pd.read_csv(required_files_dict.get("trips.txt"), encoding='utf-8-sig',dtype=str)
+        trip_df = pd.read_csv(required_files_dict.get("trips.txt"), encoding='utf-8-sig', dtype=str)
         trip_df["trip_id"] = trip_df["trip_id"].astype(str)
 
         # direction_id is mandatory field name here

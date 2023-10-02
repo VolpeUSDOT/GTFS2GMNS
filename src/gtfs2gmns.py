@@ -334,6 +334,7 @@ class GTFS2GMNS:
                     cost = 0
                     geometry = 'LINESTRING (' + str(from_node_lon) + ' ' + str(from_node_lat) + ', ' + \
                             str(to_node_lon) + ' ' + str(to_node_lat) + ')'
+                    geometry_id = (one_line_df.iloc[k].shape_id if pd.notnull(one_line_df.iloc[k].shape_id) else '0')
                     agency_name = one_line_df.agency_name[0]
                     allowed_use = allowed_use_function(one_line_df.iloc[k].route_type)
                     stop_sequence = one_line_df.iloc[k].stop_sequence
@@ -342,7 +343,7 @@ class GTFS2GMNS:
                                 link_type, link_type_name, length, lanes, capacity, free_speed, cost,
                                 VDF_fftt1, VDF_cap1, VDF_alpha1, VDF_beta1, VDF_penalty1, geometry, allowed_use,
                                 agency_name,
-                                stop_sequence, directed_service_id]
+                                stop_sequence, directed_service_id, geometry_id]
                     one_agency_link_list.append(link_list)
                     number_of_route_links += 1
                     if number_of_route_links % 50 == 0:
@@ -382,6 +383,7 @@ class GTFS2GMNS:
             directed_service_id = directed_service_dict[to_node_id]
             geometry = 'LINESTRING (' + str(from_node_lon) + ' ' + str(from_node_lat) + ', ' + \
                     str(to_node_lon) + ' ' + str(to_node_lat) + ')'
+            geometry_id = 0          
             agency_name = row.agency_name
             allowed_use = allowed_use_function(row.route_type)
 
@@ -398,7 +400,7 @@ class GTFS2GMNS:
                                 link_type, link_type_name, length, lanes, capacity, free_speed, cost,
                                 VDF_fftt1, VDF_cap1, VDF_alpha1, VDF_beta1, VDF_penalty1, geometry, allowed_use,
                                 agency_name,
-                                stop_sequence, directed_service_id]
+                                stop_sequence, directed_service_id, geometry_id]
             number_of_sta2route_links += 1
 
             # outbound links (boarding)
@@ -409,7 +411,7 @@ class GTFS2GMNS:
                                 link_type, link_type_name, length, lanes, capacity, free_speed, cost,
                                 VDF_fftt1, VDF_cap1, VDF_alpha1, VDF_beta1, VDF_penalty1, geometry, allowed_use,
                                 agency_name,
-                                stop_sequence, directed_service_id]
+                                stop_sequence, directed_service_id, geometry_id]
             one_agency_link_list.append(link_list_inbound)
             one_agency_link_list.append(link_list_outbound)
             number_of_sta2route_links += 1
@@ -491,6 +493,7 @@ class GTFS2GMNS:
                 cost = 60
                 geometry = 'LINESTRING (' + str(from_node_lon) + ' ' + str(from_node_lat) + ', ' + \
                         str(to_node_lon) + ' ' + str(to_node_lat) + ')'
+                geometry_id = 0
                 agency_name = ""
                 allowed_use = allowed_use_transferring(physical_node_df.iloc[i].node_type, neighboring_node_df.iloc[j].node_type)
                 stop_sequence = ""
@@ -498,7 +501,7 @@ class GTFS2GMNS:
                 link_list = [link_id, from_node_id, to_node_id, facility_type, dir_flag, directed_route_id,
                             link_type, link_type_name, length, lanes, capacity, free_speed, cost,
                             VDF_fftt1, VDF_cap1, VDF_alpha1, VDF_beta1, VDF_penalty1, geometry, allowed_use, agency_name,
-                            stop_sequence, directed_service_id]
+                            stop_sequence, directed_service_id, geometry_id]
                 all_link_list.append(link_list)
                 # transferring 2
                 number_of_transferring_links += 1
@@ -508,7 +511,7 @@ class GTFS2GMNS:
                 link_list = [link_id, to_node_id, from_node_id, facility_type, dir_flag, directed_route_id,
                             link_type, link_type_name, length, lanes, capacity, free_speed, cost,
                             VDF_fftt1, VDF_cap1, VDF_alpha1, VDF_beta1, VDF_penalty1, geometry, allowed_use, agency_name,
-                            stop_sequence, directed_service_id]
+                            stop_sequence, directed_service_id, geometry_id]
                 all_link_list.append(link_list)
                 number_of_transferring_links += 1
                 if number_of_transferring_links % 50 == 0:
@@ -560,7 +563,8 @@ class GTFS2GMNS:
                                     19: 'VDF_allowed_uses1',
                                     20: 'agency_name',
                                     21: 'stop_sequence',
-                                    22: 'directed_service_id'}, inplace=True)
+                                    22: 'directed_service_id',
+                                    23: 'geometry_id'}, inplace=True)
         all_link_df = all_link_df.drop_duplicates(
                     subset=['from_node_id', 'to_node_id'],
                     keep='last').reset_index(drop=True)

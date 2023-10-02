@@ -307,7 +307,6 @@ class GTFS2GMNS:
 
                 for k in range(number_of_records - 1):
                     link_id = 1000000 + number_of_route_links + 1
-                    geometry_id = one_line_df.iloc[k].shape_id
                     from_node_id = node_id_dict[one_line_df.iloc[k].directed_service_stop_id]
                     to_node_id = node_id_dict[one_line_df.iloc[k + 1].directed_service_stop_id]
                     facility_type = convert_route_type_to_link_type(one_line_df.iloc[k].route_type)
@@ -335,6 +334,7 @@ class GTFS2GMNS:
                     cost = 0
                     geometry = 'LINESTRING (' + str(from_node_lon) + ' ' + str(from_node_lat) + ', ' + \
                             str(to_node_lon) + ' ' + str(to_node_lat) + ')'
+                    geometry_id = (one_line_df.iloc[k].shape_id if pd.notnull(one_line_df.iloc[k].shape_id) else '0')
                     agency_name = one_line_df.agency_name[0]
                     allowed_use = allowed_use_function(one_line_df.iloc[k].route_type)
                     stop_sequence = one_line_df.iloc[k].stop_sequence
